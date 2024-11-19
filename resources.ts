@@ -69,6 +69,7 @@ async function run() {
 	}
 }
 
+// TODO: Get rid of this once this is all working
 async function generateDummyAnalytics() {
 	if (server.workerIndex === 1) {
 		logger.notify("WHEEEEEEE!!!!!");
