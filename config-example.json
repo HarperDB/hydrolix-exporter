@@ -1,0 +1,9 @@
+{
+  "hydrolix": {
+    "url": "https://my.hydrolix.instance/",
+    "username": "my-hydrolix-username",
+    "password": "my-hydrolix-password",
+    "project": "hydrolix-project-that-already-exists",
+    "table": "hydrolix-table-that-already-exists"
+  }
+}

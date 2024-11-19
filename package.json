@@ -1,0 +1,20 @@
+{
+  "type": "module",
+  "name": "hydrolix-exporter",
+  "version": "0.1.0",
+  "description": "Hydrolix exporter for HarperDB",
+  "scripts": {
+    "watch": "npx tsc --watch",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "axios": "^1.7.7",
+    "harperdb": "^4.4"
+  }
+}
