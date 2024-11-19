@@ -1,8 +1,6 @@
 import axios, {AxiosInstance} from 'axios';
 import { server, databases, logger } from 'harperdb';
-import * as fs from "node:fs/promises";
-import { fileURLToPath } from 'url';
-import * as path from "node:path";
+import config from "./config.json" with { type: "json" };
 
 interface HydrolixConfig {
 	url: string;
@@ -13,13 +11,6 @@ interface HydrolixConfig {
 }
 
 type HydrolixToken = string;
-
-async function readHydrolixConfig(): Promise<HydrolixConfig> {
-	const __filename = fileURLToPath(import.meta.url);
-	const __dirname = path.dirname(__filename);
-	const data = await fs.readFile(`${__dirname}/config.json`, {encoding: 'utf-8'});
-	return JSON.parse(data).hydrolix as HydrolixConfig;
-}
 
 function hydrolixClient(baseUrl: string, token: HydrolixToken): AxiosInstance {
 	return axios.create({
@@ -57,7 +48,7 @@ async function sendEvent(client: HydrolixClient, event: any) {
 }
 
 async function runExporter() {
-	const cfg = await readHydrolixConfig();
+	const cfg = config.hydrolix as HydrolixConfig;
 	logger.notify("Loading Hydrolix config")
 	const hydrolix = await initHydrolixSession(cfg);
 	const events = await databases.system.hdb_raw_analytics.subscribe({
