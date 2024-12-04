@@ -4,6 +4,80 @@
     "username": "my-hydrolix-username",
     "password": "my-hydrolix-password",
     "project": "hydrolix-project-that-already-exists",
-    "table": "hydrolix-table-that-already-exists"
+    "table": "hydrolix-table-that-already-exists",
+    "sys_info_interval": 5000,
+    "transform": {
+      "name": "harperdb_metrics_2024120301",
+      "description": "Transform for monitoring HarperDB",
+      "type": "json",
+      "settings": {
+        "compression": "none",
+        "output_columns": [
+          {
+            "name": "timestamp",
+            "datatype": {
+              "primary": true,
+              "type": "epoch",
+              "format": "ms",
+              "resolution": "ms",
+              "source": {
+                "from_json_pointers": [
+                  "/time"
+                ]
+              }
+            }
+          },
+          {
+            "name": "metric",
+            "datatype": {
+              "type": "string",
+              "index": true,
+              "source": {
+                "from_json_pointers": [
+                  "/metric"
+                ]
+              }
+            }
+          },
+          {
+            "name": "period",
+            "datatype": {
+              "type": "uint64",
+              "source": {
+                "from_json_pointers": [
+                  "/period"
+                ]
+              }
+            }
+          },
+          {
+            "name": "count",
+            "datatype": {
+              "type": "uint64",
+              "source": {
+                "from_json_pointers": [
+                  "/count"
+                ]
+              }
+            }
+          },
+          {
+            "name": "memory",
+            "datatype": {
+              "type": "map",
+              "elements": [
+                {
+                  "type": "string",
+                  "index": true
+                },
+                {
+                  "type": "uint64"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
   }
 }
