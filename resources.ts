@@ -2,7 +2,6 @@ import { server, databases, logger } from 'harperdb';
 import config from "./config.json" with { type: "json" };
 import { URL } from 'url';
 import stream from 'node:stream';
-import http from 'node:http';
 
 type Transform = {
 	[key: string]: any;
