@@ -1,0 +1,12 @@
+import { ExportConfig } from './configuration.js';
+import { runExporter } from '../services/job.js';
+import { logger, server } from 'harperdb';
+
+export const exportConfig = ExportConfig;
+
+if (server.workerIndex === 0) {
+	logger.notify('Running logs exporter...');
+	runExporter();
+	logger.notify('Hydrolix exporter shutting down');
+}
+// FIXME: NODE_TLS_REJECT_UNAUTHORIZED=0 yarn dev

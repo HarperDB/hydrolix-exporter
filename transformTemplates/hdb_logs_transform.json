@@ -1,0 +1,97 @@
+{
+	"name": "hdb_logs_transform",
+	"description": "",
+	"uuid": "7ff2c848-c873-4f03-bf0d-3fc4f74874a2",
+	"created": "2025-04-11T14:24:25.070149Z",
+	"modified": "2025-04-11T14:24:25.082110Z",
+	"settings": {
+		"is_default": true,
+		"rate_limit": null,
+		"sql_transform": null,
+		"null_values": [],
+		"sample_data": {
+			"level": "notify",
+			"thread": "main/0",
+			"message": "HarperDB successfully started.",
+			"timestamp": "1744381420198"
+		},
+		"data_mirroring_target": null,
+		"output_columns": [
+			{
+				"name": "timestamp",
+				"datatype": {
+					"type": "epoch",
+					"index": false,
+					"primary": true,
+					"format": "ms",
+					"resolution": "ms",
+					"default": null,
+					"script": null,
+					"source": null,
+					"suppress": false
+				}
+			},
+			{
+				"name": "thread",
+				"datatype": {
+					"type": "string",
+					"index": true,
+					"primary": false,
+					"format": null,
+					"resolution": "seconds",
+					"default": null,
+					"script": null,
+					"source": null,
+					"suppress": false
+				}
+			},
+			{
+				"name": "level",
+				"datatype": {
+					"type": "string",
+					"index": true,
+					"primary": false,
+					"format": null,
+					"resolution": "seconds",
+					"default": null,
+					"script": null,
+					"source": null,
+					"suppress": false
+				}
+			},
+			{
+				"name": "message",
+				"datatype": {
+					"type": "string",
+					"index": true,
+					"primary": false,
+					"format": null,
+					"resolution": "seconds",
+					"default": null,
+					"script": null,
+					"source": null,
+					"suppress": false
+				}
+			}
+		],
+		"compression": "",
+		"wurfl": null,
+		"format_details": {
+			"flattening": {
+				"depth": null,
+				"active": false,
+				"map_flattening_strategy": {
+					"left": "",
+					"right": ""
+				},
+				"slice_flattening_strategy": {
+					"left": "",
+					"right": ""
+				}
+			}
+		}
+	},
+	"url": "https://jj-hdx-sandbox.demo.harperdb.rocks/config/v1/orgs/17633535-c857-48d8-9166-dba99837dbb0/projects/46357be8-2bf4-4790-8ce9-ee09d6adde66/tables/8af4c6ae-a5fd-491d-89e9-44ef0a9b875e/transforms/7ff2c848-c873-4f03-bf0d-3fc4f74874a2",
+	"type": "json",
+	"table": "8af4c6ae-a5fd-491d-89e9-44ef0a9b875e"
+}
