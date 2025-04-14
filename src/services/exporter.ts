@@ -1,6 +1,5 @@
 import { Log, Metrics } from "../types/harper.js";
 
-// types/dataLake.ts
 export interface ExporterService {
 	initSession(): Promise<void>;
 	publishLogs(logs: Log[]): Promise<void>;
@@ -8,7 +7,7 @@ export interface ExporterService {
 }
 
 export abstract class BaseExporterService {
-    protected readonly config: Record<string, string>;
+	protected readonly config: Record<string, string>;
 
 	constructor(config: Record<string, string>) {
 		this.config = config;
