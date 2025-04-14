@@ -1,6 +1,6 @@
 import { databases, logger } from 'harperdb';
 import { LogLevel } from '../types/graphql.js';
-import type { Log } from '../types/index.js';
+import type { Log, Metrics } from '../types/index.js';
 
 export class HarperSystemInfoService {
 	private static readonly READ_LOGS_OPERATION = 'read_log';
@@ -58,7 +58,7 @@ export class HarperSystemInfoService {
 		return sampled.map((log) => ({ ...log, timestamp: new Date(log.timestamp).getTime() }));
 	}
 
-	async getSystemInfo() {
+	async getSystemInfo(): Promise<Metrics> {
 		const systemInfoOperation = {
 			operation: HarperSystemInfoService.SYSTEM_INFO_OPERATION,
 			attributes: ['memory', 'cpu'],

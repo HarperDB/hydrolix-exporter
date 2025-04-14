@@ -7,5 +7,16 @@ export interface Log {
 }
 
 export interface Metrics {
-	memory: {};
+	memory: {
+        free: number;
+        used: number;
+	};
+	cpu: {
+		current_load: {
+			avgLoad: number;
+            currentLoad: number;
+            currentLoadUser: number;
+            currentLoadSystem: number;
+		};
+	};
 }
