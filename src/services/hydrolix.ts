@@ -2,30 +2,25 @@ import { logger } from 'harperdb';
 import axios, { AxiosRequestConfig } from 'axios';
 import type {
 	ErrorLoginResponse,
-	HydrolixConfig,
 	HydrolixSession,
 	LoginResponse,
 	SuccessfulLoginResponse,
 } from '../types/hydrolix.js';
 import { HYDROLIX_ROUTES } from '../constants/index.js';
 import type { Log, Metrics } from '../types/harper.js';
+import { BaseExporterService } from './exporter.js';
 import 'dotenv/config';
 
-export class HydrolixService {
-	private readonly config: HydrolixConfig;
+export class HydrolixService extends BaseExporterService {
 	private session: HydrolixSession | undefined;
 	private token: string | undefined;
 
-	constructor(cfg: HydrolixConfig) {
-		this.config = cfg;
-	}
-
-	async initHydrolixSession(): Promise<void> {
+	async initSession(): Promise<void> {
 		this.session = (await this.login()) as SuccessfulLoginResponse;
 		this.token = this.session.auth_token.access_token;
 	}
 
-	async batchPublishLogs(logs: Log[]): Promise<void> {
+	async publishLogs(logs: Log[]): Promise<void> {
 		try {
 			await this.ingest(logs, `${this.config.project}.${this.config.logs_table}`, `${this.config.logs_transform}`);
 		} catch (error) {
@@ -113,7 +108,7 @@ export class HydrolixService {
 		} catch (error: any) {
 			if (error.response?.status === 401 && withRetry) {
 				logger.warn('Hydrolix request failed, token expired, retrying login...');
-				await this.initHydrolixSession();
+				await this.initSession();
 				return await this.hydrolixRequestAsync(path, payload, options, method, false);
 			}
 			throw error;
