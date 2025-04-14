@@ -23,6 +23,7 @@ export const runExporter = async () => {
 
 	let lastExecutionTime = 0;
 	let pollIntervalId: NodeJS.Timeout | null = null;
+	let pollInterval = exporterConfig.pollInterval;
 
 	const poll = async () => {
 		logger.info('Executing job logic...');
@@ -35,25 +36,27 @@ export const runExporter = async () => {
 			logger.info('Refreshed config:', exporterConfig);
 
 			// Update the polling interval if it has changed
-			if (pollIntervalId) {
+			if (pollInterval !== exporterConfig.pollInterval && pollIntervalId) {
+				pollInterval = exporterConfig.pollInterval;
 				clearInterval(pollIntervalId);
-				pollIntervalId = setInterval(poll, exporterConfig.pollInterval * 1000);
+				pollIntervalId = setInterval(poll, pollInterval * 1000);
 			}
 		}
 
 		lastExecutionTime = currentTime;
 
 		const logs = await harperSystemInfo.getLogs();
-		logger.info('Fetched logs:', logs);
 		await hydrolixClient.batchPublishLogs(logs);
+		logger.info(`Published ${logs.length} logs`);
 
 		if (exporterConfig.includeSystemInfo) {
 			const systemInfo = await harperSystemInfo.getSystemInfo();
 			await hydrolixClient.publishMetrics(systemInfo);
+			logger.info('Published system analytics');
 		}
 	};
 
 	poll();
 
-	pollIntervalId = setInterval(poll, exporterConfig.pollInterval * 1000);
+	pollIntervalId = setInterval(poll, pollInterval * 1000);
 };

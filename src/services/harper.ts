@@ -4,9 +4,10 @@ import type { Log } from '../types/index.js';
 
 export class HarperSystemInfoService {
 	private static readonly READ_LOGS_OPERATION = 'read_log';
-	private static readonly READ_LOGS_LIMIT = 1000; // TODO: determine what this should be
+	private static readonly READ_LOGS_LIMIT = 1000;
+	private static readonly SYSTEM_INFO_OPERATION =  'system_information';
 
-	private lastLogPoll = new Date(Date.now() - 60000); // FIXME: set to now after testing??
+	private lastLogPoll = new Date();
 	private logLevel: LogLevel;
 	private logIngestPercentage: number;
 
@@ -59,7 +60,7 @@ export class HarperSystemInfoService {
 
 	async getSystemInfo() {
 		const systemInfoOperation = {
-			operation: 'system_information',
+			operation: HarperSystemInfoService.SYSTEM_INFO_OPERATION,
 			attributes: ['memory'],
 			// attributes: ['database_metrics', 'harperdb_processes', 'replication', 'threads', 'memory'],
 		};

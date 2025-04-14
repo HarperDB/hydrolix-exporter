@@ -15,8 +15,8 @@ const config: CodegenConfig = {
 					Any: '{ [key: string]: any }',
 					Long: 'number',
 					BigInt: 'number',
-					Blob: 'Blob', // Untested
-					Bytes: 'Uint8Array', // Untested
+					Blob: 'Blob',
+					Bytes: 'Uint8Array',
 				},
 			},
 		},
