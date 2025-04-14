@@ -61,8 +61,7 @@ export class HarperSystemInfoService {
 	async getSystemInfo() {
 		const systemInfoOperation = {
 			operation: HarperSystemInfoService.SYSTEM_INFO_OPERATION,
-			attributes: ['memory'],
-			// attributes: ['database_metrics', 'harperdb_processes', 'replication', 'threads', 'memory'],
+			attributes: ['memory', 'cpu'],
 		};
 		return await databases.system.hdb_analytics.operation(systemInfoOperation);
 	}

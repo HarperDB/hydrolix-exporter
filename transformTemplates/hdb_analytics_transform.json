@@ -31,8 +31,6 @@
 					"type": "int64",
 					"index": true,
 					"primary": false,
-					"format": null,
-					"resolution": "seconds",
 					"default": null,
 					"script": null,
 					"source": {
@@ -47,12 +45,66 @@
 					"type": "int64",
 					"index": true,
 					"primary": false,
-					"format": null,
-					"resolution": "seconds",
 					"default": null,
 					"script": null,
 					"source": {
 						"from_json_pointers": ["/memory/free"]
+					},
+					"suppress": false
+				}
+			},
+			{
+				"name": "average_cpu_load",
+				"datatype": {
+					"type": "double",
+					"index": true,
+					"primary": false,
+					"default": null,
+					"script": null,
+					"source": {
+						"from_json_pointers": ["/cpu/current_load/avgLoad"]
+					},
+					"suppress": false
+				}
+			},
+			{
+				"name": "current_cpu_load",
+				"datatype": {
+					"type": "double",
+					"index": true,
+					"primary": false,
+					"default": null,
+					"script": null,
+					"source": {
+						"from_json_pointers": ["/cpu/current_load/currentLoad"]
+					},
+					"suppress": false
+				}
+			},
+			{
+				"name": "current_cpu_load_system",
+				"datatype": {
+					"type": "double",
+					"index": true,
+					"primary": false,
+					"default": null,
+					"script": null,
+					"source": {
+						"from_json_pointers": ["/cpu/current_load/currentLoadSystem"]
+					},
+					"suppress": false
+				}
+			},
+			{
+				"name": "current_cpu_load_user",
+				"datatype": {
+					"type": "double",
+					"index": true,
+					"primary": false,
+					"default": null,
+					"script": null,
+					"source": {
+						"from_json_pointers": ["/cpu/current_load/currentLoadUser"]
 					},
 					"suppress": false
 				}
