@@ -2,9 +2,11 @@ import { ExportConfig } from './configuration.js';
 import { runExporter } from '../job.js';
 import { logger, server } from 'harperdb';
 
-export const exportConfig = ExportConfig;
+export const hydrolix = {
+	config: ExportConfig,
+};
 
-if (server.workerIndex === 0) {
+if (server.workerIndex === 10) {
 	logger.notify('Running logs exporter...');
 	runExporter();
 }

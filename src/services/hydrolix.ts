@@ -139,7 +139,7 @@ export class HydrolixService {
 			};
 		}
 
-		logger.info('Hydrolix request:', url, options.headers);
+		logger.info('Hydrolix request:', method, url);
 
 		try {
 			const response = await axios({
