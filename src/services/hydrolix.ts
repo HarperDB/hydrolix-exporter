@@ -23,8 +23,7 @@ export class HydrolixService {
 	private token: string | undefined;
 
 	async initHydrolixSession(): Promise<void> {
-		this.session = (await this.login()) as SuccessfulLoginResponse;
-		this.token = this.session.auth_token.access_token;
+		await this.login();
 
 		const project = await this.getProject(this.projectName);
 		if (project) {
@@ -58,31 +57,29 @@ export class HydrolixService {
 		}
 	}
 
-	private async login(): Promise<LoginResponse> {
-		try {
-			const res = await this.requestAsync(
-				HYDROLIX_ROUTES.LOGIN,
-				'POST',
-				{
-					username: process.env.HYDROLIX_USERNAME,
-					password: process.env.HYDROLIX_PASSWORD,
+	private async login(): Promise<void> {
+		const res = await this.requestAsync(
+			HYDROLIX_ROUTES.LOGIN,
+			'POST',
+			{
+				username: process.env.HYDROLIX_USERNAME,
+				password: process.env.HYDROLIX_PASSWORD,
+			},
+			{
+				headers: {
+					'content-type': 'application/json; charset=UTF-8',
+					'Accept': 'application/json',
 				},
-				{
-					headers: {
-						'content-type': 'application/json; charset=UTF-8',
-						'Accept': 'application/json',
-					},
-				}
-			);
-
-			if (res.auth_token) {
-				return res;
 			}
+		);
 
-			throw new HydrolixAuthenticationError((res as ErrorLoginResponse).detail);
-		} catch (error) {
-			return Promise.reject(error as Error);
+		if (res.auth_token) {
+			this.session = res as SuccessfulLoginResponse;
+			this.token = this.session.auth_token.access_token;
+			return;
 		}
+
+		throw new HydrolixAuthenticationError((res as ErrorLoginResponse).detail);
 	}
 
 	private get organizationId(): string {
@@ -151,7 +148,7 @@ export class HydrolixService {
 		} catch (error: any) {
 			if (error.response?.status === 401 && withRetry) {
 				logger.warn('Hydrolix request failed, token expired, retrying login...');
-				await this.initHydrolixSession();
+				await this.login();
 				return await this.requestAsync(path, method, payload, options, false);
 			}
 			throw error;

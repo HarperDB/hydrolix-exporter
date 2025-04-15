@@ -2,14 +2,15 @@
 
 ## Overview
 
-This is a Harper component designed to export system logs Hydrolix. An active Hydrolix instance, with a project and table are prerequisits for running this component.
+This is a Harper component designed to export system logs Hydrolix. An active Hydrolix instance, with a project and table are prerequisits for running this component. When running, the component will poll Harper logs on a specified interval (see configuration options below), and publish logs to a Hydrolix table via a transform.
 
-## Getting Started
+## To run locally
 
 1. Create Hydrolix project and table
 1. `git clone https://github.com/HarperDB/hydrolix-exporter.git`
 1. `cd hydrolix-exporter`
 1. `cp .env.example > .env` (See **Environment Variables** section for more info)
+1. `npm install`
 1. `npm run build`
 1. `harperdb run .`
 
@@ -27,17 +28,20 @@ Configuration can be updated at anytime via the REST interface and the system wi
 | `pollInterval`        | The interval in seconds to poll for new logs.                                                        | `60`    |
 | `logIngestPercentage` | Percentage of logs to be ingested. Expressed as a decimal. Options: 0-1                              | `1`     |
 
+> [!NOTE]  
+> `logIngestPercentage` specifies the percentage of fetched logs to be ingested into Hydrolix. A value less than 1 evenly samples the specified percentage of logs. For example, `0.75` means 75% of the logs will be ingested, while 25% will be skipped. A value of 0 will skip log ingestion altogether.
+
 ### Configuration REST Interface
 
-| Endpoint               | Description                                             |
-| ---------------------- | ------------------------------------------------------- |
-| GET `/hydrolix/config` | REST endpoint to view export configuration properties   |
-| PUT `/hydrolix/config` | REST endpoint to update export configuration properties |
+| Endpoint                        | Description                                             |
+| ------------------------------- | ------------------------------------------------------- |
+| GET `/hydrolix_exporter/config` | REST endpoint to view export configuration properties   |
+| PUT `/hydrolix_exporter/config` | REST endpoint to update export configuration properties |
 
 #### Get current configuration:
 
 ```
-GET /hydrolix/config
+GET /hydrolix_exporter/config
 
 Response: 200
 {
@@ -51,7 +55,7 @@ Response: 200
 #### Set configuration:
 
 ```
-POST /hydrolix/config
+POST /hydrolix_exporter/config
 
 BODY:
 {
