@@ -1,7 +1,7 @@
 import { databases, logger } from 'harperdb';
 import { CONFIG_REFRESH_MS, DEFAULT_EXPORTER_CONFIG, EXPORTER_CONFIG_KEY } from './constants/index.js';
 import type { HydrolixExporterConfiguration } from './types/graphql.js';
-import { HarperSystemInfoService } from './services/harper.js';
+import { HarperService } from './services/harper.js';
 import { HydrolixService } from './services/hydrolix.js';
 
 const getExporterConfig = async (): Promise<HydrolixExporterConfiguration> =>
@@ -15,7 +15,7 @@ export const runExporter = async () => {
 	await hydrolixClient.initHydrolixSession();
 	logger.info('Logged in to Hydrolix');
 
-	const harperSystemInfo = new HarperSystemInfoService(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
+	const harperService = new HarperService(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
 
 	let lastExecutionTime = 0;
 	let pollIntervalId: NodeJS.Timeout | null = null;
@@ -28,7 +28,7 @@ export const runExporter = async () => {
 		if (currentTime - lastExecutionTime >= CONFIG_REFRESH_MS) {
 			logger.info(`${CONFIG_REFRESH_MS / 1000}s passed... refreshing config`);
 			exporterConfig = await getExporterConfig();
-			harperSystemInfo.updateSettings(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
+			harperService.updateSettings(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
 			logger.info('Refreshed config:', exporterConfig);
 
 			// Update the polling interval if it has changed
@@ -41,7 +41,7 @@ export const runExporter = async () => {
 
 		lastExecutionTime = currentTime;
 
-		const logs = await harperSystemInfo.getLogs();
+		const logs = await harperService.getLogs();
 		await hydrolixClient.publishLogs(logs);
 		logger.info(`Published ${logs.length} logs`);
 	};

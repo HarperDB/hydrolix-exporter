@@ -6,7 +6,6 @@ import type {
 	HydrolixSession,
 	HydrolixTable,
 	HydrolixTransform,
-	LoginResponse,
 	SuccessfulLoginResponse,
 } from '../types/hydrolix.js';
 import { HYDROLIX_ROUTES } from '../constants/index.js';

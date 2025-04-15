@@ -2,7 +2,7 @@ import { databases, logger } from 'harperdb';
 import { LogLevel } from '../types/graphql.js';
 import type { Log } from '../types/index.js';
 
-export class HarperSystemInfoService {
+export class HarperService {
 	private static readonly READ_LOGS_OPERATION = 'read_log';
 	private static readonly READ_LOGS_LIMIT = 1000;
 
@@ -35,9 +35,9 @@ export class HarperSystemInfoService {
 		}
 
 		const readLogsOperation = {
-			operation: HarperSystemInfoService.READ_LOGS_OPERATION,
+			operation: HarperService.READ_LOGS_OPERATION,
 			start: 0,
-			limit: HarperSystemInfoService.READ_LOGS_LIMIT,
+			limit: HarperService.READ_LOGS_LIMIT,
 			level: this.logLevel === LogLevel.All ? undefined : this.logLevel,
 			from: this.logStartFromDateTime,
 		};
@@ -50,7 +50,7 @@ export class HarperSystemInfoService {
 		do {
 			newLogs = await databases.system.hdb_analytics.operation(readLogsOperation);
 			result.push(...newLogs);
-			readLogsOperation.start += HarperSystemInfoService.READ_LOGS_LIMIT;
+			readLogsOperation.start += HarperService.READ_LOGS_LIMIT;
 		} while (newLogs.length > 0);
 
 		const sampled = this.getLogsSample(result);

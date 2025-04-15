@@ -15,7 +15,8 @@ export class ExportConfig extends HydrolixExporterConfiguration {
 			throw new BadRequestError('logIngestPercentage must be between 0 and 1');
 		}
 
-		HydrolixExporterConfiguration.put(EXPORTER_CONFIG_KEY, {
+		HydrolixExporterConfiguration.create({
+			id: EXPORTER_CONFIG_KEY,
 			logLevel: payload.logLevel,
 			pollInterval: payload.pollInterval,
 			logIngestPercentage: payload.logIngestPercentage,
