@@ -6,15 +6,16 @@ This is a Harper component designed to export system logs Hydrolix. An active Hy
 
 ## Getting Started
 
+1. Create Hydrolix project and table
 1. `git clone https://github.com/HarperDB/hydrolix-exporter.git`
-
 1. `cd hydrolix-exporter`
+1. `cp .env.example > .env` (See **Environment Variables** section for more info)
 1. `npm run build`
 1. `harperdb run .`
 
 This assumes you have the Harper stack already installed. [Install Harper](https://docs.harperdb.io/docs/deployments/install-harperdb) globally.
 
-## Export Configuration
+## Exporter Configuration
 
 Configuration can be updated at anytime via the REST interface and the system will pickup the new config automatically.
 
@@ -28,20 +29,19 @@ Configuration can be updated at anytime via the REST interface and the system wi
 
 ### Configuration REST Interface
 
-| Endpoint                                | Description                                             |
-| --------------------------------------- | ------------------------------------------------------- |
-| GET `/exportConfig/:export_destination` | REST endpoint to view export configuration properties   |
-| PUT `/exportConfig/:export_destination` | REST endpoint to update export configuration properties |
+| Endpoint               | Description                                             |
+| ---------------------- | ------------------------------------------------------- |
+| GET `/hydrolix/config` | REST endpoint to view export configuration properties   |
+| PUT `/hydrolix/config` | REST endpoint to update export configuration properties |
 
 #### Get current configuration:
 
 ```
-GET /exportConfig/hydrolix
+GET /hydrolix/config
 
 Response: 200
 {
     "logLevel": "all",
-    "includeSystemInfo": true,
     "pollInterval": 60,
     "logIngestPercentage": 1,
     "updatedAt": 1697030400000,
@@ -51,12 +51,11 @@ Response: 200
 #### Set configuration:
 
 ```
-PUT /exportConfig/hydrolix
+PUT /hydrolix/config
 
 BODY:
 {
     "logLevel": "all",
-    "includeSystemInfo": true,
     "pollInterval": 60,
     "logIngestPercentage": 1
 }
@@ -64,13 +63,21 @@ BODY:
 Response: 204
 ```
 
-## Environment Variables/Data Lake Configuration
+## Environment Variables
 
-To run the component, you will need to set up a `.env` file in the root of the component directory, and a `config.json` file in `/src`.
+To run the component, you will need to set up a `.env` file in the root of the component directory.
 
-Copy the `.env.example` file to `.env`, and `/src/config-example.json` to `/src/config.json`. Fill in appropriate values.
+Copy the `.env.example` file to `.env`. Fill in appropriate values.
+
+| Variable              | Description                                   |
+| --------------------- | --------------------------------------------- |
+| HYDROLIX_USERNAME     | Email address for Hydrolix user               |
+| HYDROLIX_PASSWORD     | Password for Hydrolix user                    |
+| HYDROLIX_INSTANCE_URL | Url for Hydrolix instance (no trailing slash) |
+| HYDROLIX_PROJECT_NAME | Name of Hydrolix project                      |
+| HYDROLIX_TABLE_NAME   | Name of table to export logs                  |
 
 ## Hydrolix Tables & Transforms
 
-To export logs to Hydrolix, you will need to [create a table](https://docs.hydrolix.io/reference/config_v1_orgs_projects_tables_create) and [corresponding transform](https://docs.hydrolix.io/reference/config_v1_orgs_projects_tables_transforms_create) in Hydrolix.
-One table/transform pair is required for logs, and one for system analytics (if enabled). See `/transformTemplates` for example JSON to create the transforms.
+To export logs to Hydrolix, you will need to create a table. This can be done via the Hydrolix UI for your instance, or [via REST API](https://docs.hydrolix.io/reference/config_v1_orgs_projects_tables_create).
+The transform will automatically created for the table if it does not alreay exist. See `/transformTemplates` for detail on the transform.

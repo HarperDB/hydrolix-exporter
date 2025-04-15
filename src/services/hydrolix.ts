@@ -13,6 +13,7 @@ import { HYDROLIX_ROUTES } from '../constants/index.js';
 import type { Log } from '../types/harper.js';
 import 'dotenv/config';
 import transformConfig from '../../transformTemplates/hdb_logs_transform.json' with { type: 'json' };
+import { HydrolixAuthenticationError, HydrolixResourceNotFoundError } from '../errors/index.js';
 
 export class HydrolixService {
 	private readonly projectName: string = process.env.HYDROLIX_PROJECT_NAME!;
@@ -27,16 +28,16 @@ export class HydrolixService {
 
 		const project = await this.getProject(this.projectName);
 		if (project) {
-			logger.notify('Hydrolix project:', project);
+			logger.info('Hydrolix project:', project);
 		} else {
-			throw new Error(`Hydrolix project ${this.projectName} not found`);
+			throw new HydrolixResourceNotFoundError(`Hydrolix project ${this.projectName} not found`);
 		}
 
 		const table = await this.getTable(project.uuid, this.tableName);
 		if (table) {
-			logger.notify('Hydrolix table:', table);
+			logger.info('Hydrolix table:', table);
 		} else {
-			throw new Error(`Hydrolix table ${this.tableName} not found`);
+			throw new HydrolixResourceNotFoundError(`Hydrolix table ${this.tableName} not found`);
 		}
 
 		await this.ensureTransform(project.uuid, table.uuid);
@@ -74,13 +75,11 @@ export class HydrolixService {
 				}
 			);
 
-			if (res.detail && res.detail === 'Could not login') {
-				return Promise.reject(new Error((res as ErrorLoginResponse).detail));
-			}
 			if (res.auth_token) {
 				return res;
 			}
-			return Promise.reject(new Error((res as ErrorLoginResponse).detail));
+
+			throw new HydrolixAuthenticationError((res as ErrorLoginResponse).detail);
 		} catch (error) {
 			return Promise.reject(error as Error);
 		}
@@ -103,7 +102,7 @@ export class HydrolixService {
 	private async ensureTransform(projId: string, tableId: string) {
 		const exists = await this.transformExists(projId, tableId);
 		if (exists) {
-			logger.notify(`Hydrolix transform ${this.transformName} exists`);
+			logger.info(`Hydrolix transform ${this.transformName} exists`);
 			return;
 		}
 		await this.createTransform(projId, tableId);
@@ -120,7 +119,7 @@ export class HydrolixService {
 			'POST',
 			transformConfig
 		);
-		logger.notify('Created Hydrolix transform:', res);
+		logger.info('Created Hydrolix transform:', res);
 	}
 
 	private async requestAsync(
