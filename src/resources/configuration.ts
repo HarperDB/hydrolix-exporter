@@ -7,7 +7,6 @@ const { HydrolixExporterConfiguration } = databases.HydrolixExporter;
 
 export class ExportConfig extends HydrolixExporterConfiguration {
 	post(payload: HydrolixExporterConfiguration) {
-		console.log(payload);
 		if (payload.pollInterval < 1 || payload.pollInterval > 3600) {
 			throw new BadRequestError('pollInterval must be between 1 and 3600 seconds');
 		}
