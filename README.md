@@ -51,7 +51,7 @@ Response: 200
 #### Set configuration:
 
 ```
-PUT /hydrolix/config
+POST /hydrolix/config
 
 BODY:
 {

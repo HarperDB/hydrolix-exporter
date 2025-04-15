@@ -6,7 +6,7 @@ export const hydrolix = {
 	config: ExportConfig,
 };
 
-if (server.workerIndex === 10) {
+if (server.workerIndex === 0) {
 	logger.notify('Running logs exporter...');
 	runExporter();
 }
