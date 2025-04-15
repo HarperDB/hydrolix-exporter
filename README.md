@@ -1,8 +1,8 @@
-# Hydrolix Logs Exporter
+# Hydrolix Exporter
 
 ## Overview
 
-This is a Harper component designed to export system logs and analytics to data lakes. It has been initially designed to support Hydrolix, but could easily be extended to support other platforms.
+This is a Harper component designed to export system logs Hydrolix. An active Hydrolix instance, with a project and table are prerequisits for running this component.
 
 ## Getting Started
 
@@ -23,14 +23,13 @@ Configuration can be updated at anytime via the REST interface and the system wi
 | Option                | Description                                                                                          | Default |
 | --------------------- | ---------------------------------------------------------------------------------------------------- | ------- |
 | `logLevel`            | The level of logging to be used. Options: 'all', 'notify', 'error', 'warn', 'info', 'debug', 'trace' | `all`   |
-| `includeSystemInfo`   | Whether to export system analytics information. Options: true, false                                 | `true`  |
 | `pollInterval`        | The interval in seconds to poll for new logs.                                                        | `60`    |
 | `logIngestPercentage` | Percentage of logs to be ingested. Expressed as a decimal. Options: 0-1                              | `1`     |
 
 ### Configuration REST Interface
 
-| Endpoint            | Description                                             |
-| ------------------- | ------------------------------------------------------- |
+| Endpoint                                | Description                                             |
+| --------------------------------------- | ------------------------------------------------------- |
 | GET `/exportConfig/:export_destination` | REST endpoint to view export configuration properties   |
 | PUT `/exportConfig/:export_destination` | REST endpoint to update export configuration properties |
 
@@ -67,7 +66,7 @@ Response: 204
 
 ## Environment Variables/Data Lake Configuration
 
-To run the component, you will need to set up a `.env` file in the root of the component directory, and a `config.json` file in `/src`. 
+To run the component, you will need to set up a `.env` file in the root of the component directory, and a `config.json` file in `/src`.
 
 Copy the `.env.example` file to `.env`, and `/src/config-example.json` to `/src/config.json`. Fill in appropriate values.
 

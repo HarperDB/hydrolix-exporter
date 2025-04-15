@@ -1,8 +1,9 @@
 import { databases } from 'harperdb';
-import type { LogExportConfiguration } from '../types/graphql.js';
+import type { HydrolixExporterConfiguration } from '../types/graphql.js';
+import { EXPORTER_CONFIG_KEY } from '../constants/index.js';
 
 export class ExportConfig extends databases.LogsExporter.LogExportConfiguration {
-	put(payload: LogExportConfiguration) {
+	post(payload: HydrolixExporterConfiguration) {
 		if (payload.pollInterval < 1 || payload.pollInterval > 3600) {
 			throw new Error('pollInterval must be between 1 and 3600 seconds');
 		}
@@ -11,9 +12,9 @@ export class ExportConfig extends databases.LogsExporter.LogExportConfiguration 
 			throw new Error('logIngestPercentage must be between 0 and 1');
 		}
 
-		super.put({
+		super.post({
+			id: EXPORTER_CONFIG_KEY,
 			logLevel: payload.logLevel,
-			includeSystemInfo: payload.includeSystemInfo,
 			pollInterval: payload.pollInterval,
 			logIngestPercentage: payload.logIngestPercentage,
 		});

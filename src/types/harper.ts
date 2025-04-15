@@ -5,18 +5,3 @@ export interface Log {
 	tags: string[];
 	message: string;
 }
-
-export interface Metrics {
-	memory: {
-        free: number;
-        used: number;
-	};
-	cpu: {
-		current_load: {
-			avgLoad: number;
-            currentLoad: number;
-            currentLoadUser: number;
-            currentLoadSystem: number;
-		};
-	};
-}

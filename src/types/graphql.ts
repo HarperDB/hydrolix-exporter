@@ -14,19 +14,14 @@ export type Scalars = {
 	Float: { input: number; output: number };
 };
 
-export type LogExportConfiguration = {
-	__typename?: 'LogExportConfiguration';
-	destination: LogExportDestination;
-	includeSystemInfo: Scalars['Boolean']['output'];
+export type HydrolixExporterConfiguration = {
+	__typename?: 'HydrolixExporterConfiguration';
+	id?: Maybe<Scalars['String']['output']>;
 	logIngestPercentage: Scalars['Float']['output'];
 	logLevel: LogLevel;
 	pollInterval: Scalars['Int']['output'];
 	updatedTime?: Maybe<Scalars['Float']['output']>;
 };
-
-export enum LogExportDestination {
-	Hydrolix = 'hydrolix',
-}
 
 export enum LogLevel {
 	All = 'all',

@@ -1,14 +1,3 @@
-export interface HydrolixConfig {
-	url: string;
-	username: string;
-	password: string;
-	project: string;
-	logs_table: string;
-	logs_transform: string;
-	analytics_table: string;
-	analytics_transform: string;
-}
-
 export type HydrolixSession = SuccessfulLoginResponse;
 
 export interface HydrolixClientLoggedIn {
@@ -26,6 +15,9 @@ export interface HydrolixObject {
 }
 
 export type HydrolixOrg = HydrolixObject;
+export type HydrolixProject = HydrolixObject;
+export type HydrolixTable = HydrolixObject;
+export type HydrolixTransform = HydrolixObject;
 
 export interface LoginResponse {
 	[propName: string]: any;

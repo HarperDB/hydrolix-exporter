@@ -1,11 +1,10 @@
 import { databases, logger } from 'harperdb';
 import { LogLevel } from '../types/graphql.js';
-import type { Log, Metrics } from '../types/index.js';
+import type { Log } from '../types/index.js';
 
 export class HarperSystemInfoService {
 	private static readonly READ_LOGS_OPERATION = 'read_log';
 	private static readonly READ_LOGS_LIMIT = 1000;
-	private static readonly SYSTEM_INFO_OPERATION =  'system_information';
 
 	private lastLogPoll = new Date();
 	private logLevel: LogLevel;
@@ -56,14 +55,6 @@ export class HarperSystemInfoService {
 
 		const sampled = this.getLogsSample(result);
 		return sampled.map((log) => ({ ...log, timestamp: new Date(log.timestamp).getTime() }));
-	}
-
-	async getSystemInfo(): Promise<Metrics> {
-		const systemInfoOperation = {
-			operation: HarperSystemInfoService.SYSTEM_INFO_OPERATION,
-			attributes: ['memory', 'cpu'],
-		};
-		return await databases.system.hdb_analytics.operation(systemInfoOperation);
 	}
 
 	private getLogsSample(logs: Log[]): Log[] {
