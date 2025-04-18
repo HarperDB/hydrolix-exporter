@@ -35,13 +35,13 @@ Configuration can be updated at anytime via the REST interface and the system wi
 
 | Endpoint                        | Description                                             |
 | ------------------------------- | ------------------------------------------------------- |
-| GET `/hydrolix_exporter/config` | REST endpoint to view export configuration properties   |
-| PUT `/hydrolix_exporter/config` | REST endpoint to update export configuration properties |
+| GET `/hydrolix-exporter/config` | REST endpoint to view export configuration properties   |
+| PUT `/hydrolix-exporter/config` | REST endpoint to update export configuration properties |
 
 #### Get current configuration:
 
 ```
-GET /hydrolix_exporter/config
+GET /hydrolix-exporter/config
 
 Response: 200
 {
@@ -55,7 +55,7 @@ Response: 200
 #### Set configuration:
 
 ```
-POST /hydrolix_exporter/config
+POST /hydrolix-exporter/config
 
 BODY:
 {

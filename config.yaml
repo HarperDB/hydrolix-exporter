@@ -3,5 +3,6 @@ graphqlSchema:
   files: src/db/schema.graphql
 jsResource:
   files: dist/src/resources/index.js
+  path: /hydrolix-exporter/
 loadEnv:
   files: '.env'
