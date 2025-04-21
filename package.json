@@ -1,19 +1,33 @@
 {
-  "type": "module",
-  "name": "hydrolix-exporter",
-  "version": "0.1.0",
-  "description": "Hydrolix exporter for HarperDB",
-  "scripts": {
-    "watch": "npx tsc --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.6.3"
-  },
-  "dependencies": {
-    "harperdb": "^4.4"
-  }
+	"name": "hydrolix-exporter",
+	"version": "1.0.0",
+	"description": "A Harper component to export logs and system information to Hydrolix.",
+	"main": "dist/index.js",
+	"type": "module",
+	"scripts": {
+		"generate:types": "graphql-codegen --config codegen.ts",
+		"build": "tsc",
+		"dev": "tsc; harperdb dev .",
+		"format": "prettier --write .",
+		"postinstall": "npm link harperdb",
+		"postuninstall": "npm link harperdb"
+	},
+	"prettier": "@harperdb/code-guidelines/prettier",
+	"author": "Joshua Johnson <jjohnson@harperdb.io>",
+	"license": "MIT",
+	"devDependencies": {
+		"@graphql-codegen/cli": "^5.0.3",
+		"@graphql-codegen/typescript": "^4.1.2",
+		"@graphql-codegen/typescript-operations": "^4.4.0",
+		"@harperdb/code-guidelines": "^0.0.2",
+		"@types/node": "^22.10.2",
+		"dotenv": "^16.5.0",
+		"graphql": "^16.10.0",
+		"prettier": "^3.4.2",
+		"tsx": "^4.19.2",
+		"typescript": "^5.7.2"
+	},
+	"dependencies": {
+		"axios": "^1.8.4"
+	}
 }

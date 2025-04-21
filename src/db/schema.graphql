@@ -1,0 +1,17 @@
+enum LogLevel {
+	all
+	notify
+	error
+	warn
+	info
+	debug
+	trace
+}
+
+type HydrolixExporterConfiguration @table(database: "HydrolixExporter") @sealed @export {
+	id: String @primaryKey
+	logLevel: LogLevel!
+	pollInterval: Int!
+	logIngestPercentage: Float!
+	updatedTime: Float @updatedTime
+}
