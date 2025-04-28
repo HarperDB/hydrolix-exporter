@@ -4,6 +4,9 @@
 
 This is a Harper component designed to export system logs Hydrolix. An active Hydrolix instance, with a project and table are prerequisits for running this component. When running, the component will poll Harper logs on a specified interval (see configuration options below), and publish logs to a Hydrolix table via a transform.
 
+### What is Harper
+Harper is a Composable Application Platform that merges database, cache, app logic, and messaging into a single runtime. Components like this plug directly into Harper, letting you build and scale distributed services fast, without managing separate systems. Built for geo-distributed apps with low latency and high uptime by default.
+
 ## To run locally
 
 1. Create Hydrolix project and table
