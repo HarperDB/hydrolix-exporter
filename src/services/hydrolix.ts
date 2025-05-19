@@ -1,5 +1,4 @@
 import { logger } from 'harperdb';
-import axios, { AxiosRequestConfig } from 'axios';
 import type {
 	ErrorLoginResponse,
 	HydrolixProject,
@@ -122,7 +121,7 @@ export class HydrolixService {
 		path: string,
 		method: 'POST' | 'GET',
 		payload?: Record<string, any>,
-		options: AxiosRequestConfig = {},
+		options: RequestInit = {},
 		withRetry = true
 	): Promise<Record<string, any>> {
 		const url = new URL(path, process.env.HYDROLIX_INSTANCE_URL).toString();
@@ -136,21 +135,33 @@ export class HydrolixService {
 
 		logger.info('Hydrolix request:', method, url);
 
-		try {
-			const response = await axios({
-				url,
-				method,
-				data: payload,
-				...options,
-			});
-			return response.data;
-		} catch (error: any) {
-			if (error.response?.status === 401 && withRetry) {
+		let body: string | undefined;
+		if (payload) {
+			body = JSON.stringify(payload);
+		}
+
+		const res = await fetch(url, { method, body, ...options });
+
+		if (!res.ok) {
+			if (res.status === 401 && withRetry) {
 				logger.warn('Hydrolix request failed, token expired, retrying login...');
 				await this.login();
 				return await this.requestAsync(path, method, payload, options, false);
 			}
+
+			let errorResponse: any;
+			if (res.headers.get('content-type') === 'application/json') {
+				errorResponse = await res.json();
+			}
+			if (res.headers.get('content-type') === 'text/plain') {
+				errorResponse = await res.text();
+			}
+			const error = new Error(res.statusText);
+			error.name = 'HydrolixError';
+			error.message = `Hydrolix request failed: ${res.status} ${errorResponse}`;
 			throw error;
 		}
+
+		return res.json();
 	}
 }
