@@ -1,4 +1,3 @@
-import { logger } from 'harperdb';
 import type {
 	ErrorLoginResponse,
 	HydrolixProject,
@@ -9,7 +8,7 @@ import type {
 } from '../types/hydrolix.js';
 import { HYDROLIX_ROUTES } from '../constants/index.js';
 import type { Log } from '../types/harper.js';
-import 'dotenv/config';
+// import 'dotenv/config';
 import transformConfig from '../../transformTemplates/hdb_logs_transform.json' with { type: 'json' };
 import { HydrolixAuthenticationError, HydrolixResourceNotFoundError } from '../errors/index.js';
 
@@ -25,6 +24,7 @@ export class HydrolixService {
 
 		const project = await this.getProject(this.projectName);
 		if (project) {
+			// @ts-ignore
 			logger.info('Hydrolix project:', project);
 		} else {
 			throw new HydrolixResourceNotFoundError(`Hydrolix project ${this.projectName} not found`);
@@ -32,6 +32,7 @@ export class HydrolixService {
 
 		const table = await this.getTable(project.uuid, this.tableName);
 		if (table) {
+			// @ts-ignore
 			logger.info('Hydrolix table:', table);
 		} else {
 			throw new HydrolixResourceNotFoundError(`Hydrolix table ${this.tableName} not found`);
@@ -51,6 +52,7 @@ export class HydrolixService {
 				},
 			});
 		} catch (error) {
+			// @ts-ignore
 			logger.error('Error sending logs to Hydrolix', error);
 		}
 	}
@@ -97,6 +99,7 @@ export class HydrolixService {
 	private async ensureTransform(projId: string, tableId: string) {
 		const exists = await this.transformExists(projId, tableId);
 		if (exists) {
+			// @ts-ignore
 			logger.info(`Hydrolix transform ${this.transformName} exists`);
 			return;
 		}
@@ -114,6 +117,7 @@ export class HydrolixService {
 			'POST',
 			transformConfig
 		);
+		// @ts-ignore
 		logger.info('Created Hydrolix transform:', res);
 	}
 
@@ -133,6 +137,7 @@ export class HydrolixService {
 			};
 		}
 
+		// @ts-ignore
 		logger.info('Hydrolix request:', method, url);
 
 		let body: string | undefined;
@@ -144,6 +149,7 @@ export class HydrolixService {
 
 		if (!res.ok) {
 			if (res.status === 401 && withRetry) {
+				// @ts-ignore
 				logger.warn('Hydrolix request failed, token expired, retrying login...');
 				await this.login();
 				return await this.requestAsync(path, method, payload, options, false);
