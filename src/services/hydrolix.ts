@@ -115,7 +115,12 @@ export class HydrolixService {
 		const res = await this.requestAsync(
 			HYDROLIX_ROUTES.TRANSFORMS(this.organizationId, projId, tableId),
 			'POST',
-			transformConfig
+			transformConfig,
+			{
+				headers: {
+					'content-type': 'application/json; charset=UTF-8',
+				},
+			}
 		);
 		// @ts-ignore
 		logger.info('Created Hydrolix transform:', res);
