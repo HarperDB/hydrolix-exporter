@@ -69,7 +69,8 @@ export class HydrolixService {
 					'content-type': 'application/json; charset=UTF-8',
 					'Accept': 'application/json',
 				},
-			}
+			},
+			false
 		);
 
 		if (res.auth_token) {
