@@ -12,7 +12,6 @@
 			"message": "HarperDB successfully started.",
 			"timestamp": "1744381420198"
 		},
-		"data_mirroring_target": null,
 		"output_columns": [
 			{
 				"name": "timestamp",
