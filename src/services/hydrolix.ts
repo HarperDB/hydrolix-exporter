@@ -168,9 +168,10 @@ export class HydrolixService {
 			if (res.headers.get('content-type') === 'text/plain') {
 				errorResponse = await res.text();
 			}
+
 			const error = new Error(res.statusText);
 			error.name = 'HydrolixError';
-			error.message = `Hydrolix request failed: ${res.status} ${errorResponse}`;
+			error.message = `Hydrolix request failed: ${res.status} ${JSON.stringify(errorResponse)}`;
 			throw error;
 		}
 
