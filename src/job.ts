@@ -42,6 +42,12 @@ export const runExporter = async () => {
 		lastExecutionTime = currentTime;
 
 		const logs = await harperService.getLogs();
+
+		if (logs.length === 0) {
+			logger.info('No logs to process');
+			return;
+		}
+
 		await hydrolixClient.publishLogs(logs);
 		logger.info(`Published ${logs.length} logs`);
 	};
