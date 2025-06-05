@@ -1,5 +1,3 @@
-import { logger } from 'harperdb';
-import axios, { AxiosRequestConfig } from 'axios';
 import type {
 	ErrorLoginResponse,
 	HydrolixProject,
@@ -10,7 +8,7 @@ import type {
 } from '../types/hydrolix.js';
 import { HYDROLIX_ROUTES } from '../constants/index.js';
 import type { Log } from '../types/harper.js';
-import 'dotenv/config';
+// import 'dotenv/config';
 import transformConfig from '../../transformTemplates/hdb_logs_transform.json' with { type: 'json' };
 import { HydrolixAuthenticationError, HydrolixResourceNotFoundError } from '../errors/index.js';
 
@@ -26,6 +24,7 @@ export class HydrolixService {
 
 		const project = await this.getProject(this.projectName);
 		if (project) {
+			// @ts-ignore
 			logger.info('Hydrolix project:', project);
 		} else {
 			throw new HydrolixResourceNotFoundError(`Hydrolix project ${this.projectName} not found`);
@@ -33,6 +32,7 @@ export class HydrolixService {
 
 		const table = await this.getTable(project.uuid, this.tableName);
 		if (table) {
+			// @ts-ignore
 			logger.info('Hydrolix table:', table);
 		} else {
 			throw new HydrolixResourceNotFoundError(`Hydrolix table ${this.tableName} not found`);
@@ -52,6 +52,7 @@ export class HydrolixService {
 				},
 			});
 		} catch (error) {
+			// @ts-ignore
 			logger.error('Error sending logs to Hydrolix', error);
 		}
 	}
@@ -99,6 +100,7 @@ export class HydrolixService {
 	private async ensureTransform(projId: string, tableId: string) {
 		const exists = await this.transformExists(projId, tableId);
 		if (exists) {
+			// @ts-ignore
 			logger.info(`Hydrolix transform ${this.transformName} exists`);
 			return;
 		}
@@ -114,8 +116,14 @@ export class HydrolixService {
 		const res = await this.requestAsync(
 			HYDROLIX_ROUTES.TRANSFORMS(this.organizationId, projId, tableId),
 			'POST',
-			transformConfig
+			transformConfig,
+			{
+				headers: {
+					'content-type': 'application/json; charset=UTF-8',
+				},
+			}
 		);
+		// @ts-ignore
 		logger.info('Created Hydrolix transform:', res);
 	}
 
@@ -123,7 +131,7 @@ export class HydrolixService {
 		path: string,
 		method: 'POST' | 'GET',
 		payload?: Record<string, any>,
-		options: AxiosRequestConfig = {},
+		options: RequestInit = {},
 		withRetry = true
 	): Promise<Record<string, any>> {
 		const url = new URL(path, process.env.HYDROLIX_INSTANCE_URL).toString();
@@ -135,23 +143,38 @@ export class HydrolixService {
 			};
 		}
 
+		// @ts-ignore
 		logger.info('Hydrolix request:', method, url);
 
-		try {
-			const response = await axios({
-				url,
-				method,
-				data: payload,
-				...options,
-			});
-			return response.data;
-		} catch (error: any) {
-			if (error.response?.status === 401 && withRetry) {
+		let body: string | undefined;
+		if (payload) {
+			body = JSON.stringify(payload);
+		}
+
+		const res = await fetch(url, { method, body, ...options });
+
+		if (!res.ok) {
+			if (res.status === 401 && withRetry) {
+				// @ts-ignore
 				logger.warn('Hydrolix request failed, token expired, retrying login...');
 				await this.login();
 				return await this.requestAsync(path, method, payload, options, false);
 			}
+
+			let errorResponse: any;
+			if (res.headers.get('content-type') === 'application/json') {
+				errorResponse = await res.json();
+			}
+			if (res.headers.get('content-type') === 'text/plain') {
+				errorResponse = await res.text();
+			}
+
+			const error = new Error(res.statusText);
+			error.name = 'HydrolixError';
+			error.message = `Hydrolix request failed: ${res.status} ${JSON.stringify(errorResponse)}`;
 			throw error;
 		}
+
+		return res.json();
 	}
 }

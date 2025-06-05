@@ -1,4 +1,4 @@
-import { databases, logger } from 'harperdb';
+// import { databases, logger } from 'harperdb';
 import { LogLevel } from '../types/graphql.js';
 import type { Log } from '../types/index.js';
 
@@ -25,6 +25,7 @@ export class HarperService {
 	}
 
 	async getLogs(): Promise<Log[]> {
+		// @ts-ignore
 		logger.info('Fetching logs with settings:', {
 			logLevel: this.logLevel,
 			logIngestPercentage: this.logIngestPercentage,
@@ -48,6 +49,7 @@ export class HarperService {
 		let newLogs = [];
 
 		do {
+			// @ts-ignore
 			newLogs = await databases.system.hdb_analytics.operation(readLogsOperation);
 			result.push(...newLogs);
 			readLogsOperation.start += HarperService.READ_LOGS_LIMIT;

@@ -1,18 +1,20 @@
-import { databases, logger } from 'harperdb';
+// import { databases, logger } from 'harperdb';
 import { CONFIG_REFRESH_MS, DEFAULT_EXPORTER_CONFIG, EXPORTER_CONFIG_KEY } from './constants/index.js';
 import type { HydrolixExporterConfiguration } from './types/graphql.js';
 import { HarperService } from './services/harper.js';
 import { HydrolixService } from './services/hydrolix.js';
 
-const getExporterConfig = async (): Promise<HydrolixExporterConfiguration> =>
+const getExporterConfig = async (): Promise<HydrolixExporterConfiguration> =>// @ts-ignore
 	(await databases.HydrolixExporter.HydrolixExporterConfiguration.get(EXPORTER_CONFIG_KEY)) ?? DEFAULT_EXPORTER_CONFIG;
 
 export const runExporter = async () => {
 	let exporterConfig = await getExporterConfig();
+	// @ts-ignore
 	logger.info('Running job with config:', exporterConfig);
 
 	const hydrolixClient = new HydrolixService();
 	await hydrolixClient.initHydrolixSession();
+	// @ts-ignore
 	logger.info('Logged in to Hydrolix');
 
 	const harperService = new HarperService(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
@@ -22,13 +24,16 @@ export const runExporter = async () => {
 	let pollInterval = exporterConfig.pollInterval;
 
 	const poll = async () => {
+		// @ts-ignore
 		logger.info('Executing job logic...');
 
 		const currentTime = Date.now();
 		if (currentTime - lastExecutionTime >= CONFIG_REFRESH_MS) {
+			// @ts-ignore
 			logger.info(`${CONFIG_REFRESH_MS / 1000}s passed... refreshing config`);
 			exporterConfig = await getExporterConfig();
 			harperService.updateSettings(exporterConfig.logLevel, exporterConfig.logIngestPercentage);
+			// @ts-ignore
 			logger.info('Refreshed config:', exporterConfig);
 
 			// Update the polling interval if it has changed
@@ -49,6 +54,7 @@ export const runExporter = async () => {
 		}
 
 		await hydrolixClient.publishLogs(logs);
+		// @ts-ignore
 		logger.info(`Published ${logs.length} logs`);
 	};
 

@@ -1,8 +1,8 @@
 rest: true
 graphqlSchema:
   files: src/db/schema.graphql
+loadEnv:
+  files: '.env'
 jsResource:
   files: dist/src/resources/index.js
   path: /hydrolix-exporter/
-loadEnv:
-  files: '.env'
