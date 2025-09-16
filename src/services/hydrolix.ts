@@ -88,12 +88,12 @@ export class HydrolixService {
 
 	private async getProject(projName: string): Promise<HydrolixProject | undefined> {
 		const res = await this.requestAsync(HYDROLIX_ROUTES.PROJECTS(this.organizationId), 'GET');
-		return res.find((p: HydrolixProject) => p.name === projName);
+		return res.results.find((p: HydrolixProject) => p.name === projName);
 	}
 
 	private async getTable(projId: string, tableName: string): Promise<HydrolixTable | undefined> {
 		const res = await this.requestAsync(HYDROLIX_ROUTES.TABLES(this.organizationId, projId), 'GET');
-		return res.find((t: HydrolixTable) => t.name === tableName);
+		return res.results.find((t: HydrolixTable) => t.name === tableName);
 	}
 
 	private async ensureTransform(projId: string, tableId: string) {
@@ -107,7 +107,7 @@ export class HydrolixService {
 
 	private async transformExists(projId: string, tableId: string): Promise<boolean> {
 		const res = await this.requestAsync(HYDROLIX_ROUTES.TRANSFORMS(this.organizationId, projId, tableId), 'GET');
-		return res.some((t: HydrolixTransform) => t.name === this.transformName);
+		return res.results.some((t: HydrolixTransform) => t.name === this.transformName);
 	}
 
 	private async createTransform(projId: string, tableId: string): Promise<void> {
