@@ -2,7 +2,6 @@
 	"name": "hydrolix-exporter",
 	"version": "1.0.0",
 	"description": "A Harper component to export logs and system information to Hydrolix.",
-	"main": "dist/index.js",
 	"type": "module",
 	"scripts": {
 		"generate:types": "graphql-codegen --config codegen.ts",

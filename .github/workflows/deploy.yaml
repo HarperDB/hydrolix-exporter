@@ -1,0 +1,113 @@
+name: Deploy Application
+
+on:
+  workflow_dispatch:
+    inputs:
+      # HarperDB inputs
+      hdb_target:
+        type: string
+        description: HarperDB Deployment Instance Target URL
+        required: true
+      hdb_username:
+        type: string
+        description: HDB Admin Username
+        required: true
+      hdb_password:
+        type: string
+        description: HDB Admin Password
+        required: true
+      replicated:
+        type: boolean
+        description: Should replicate to the entire cluster
+        default: true
+
+      # General deploy controls
+      ref:
+        type: string
+        description: Specific branch or commit SHA to deploy (defaults to latest commit on the 'main' branch)
+        required: false
+      restart:
+        type: boolean
+        description: Restart After Deploy
+        default: true
+
+      # Hydrolix inputs
+      hydrolix_target:
+        type: string
+        description: Hydrolix Instance Target URL
+        required: true
+      hydrolix_username:
+        type: string
+        description: Hydrolix Username
+        required: true
+      hydrolix_password:
+        type: string
+        description: Hydrolix Password
+        required: true
+      hydrolix_project:
+        type: string
+        description: Hydrolix project name
+        required: true
+      hydrolix_table:
+        type: string
+        description: Hydrolix table name
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install project dependencies
+        run: npm install
+        shell: bash
+
+      - name: Create .env for Hydrolix
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "HYDROLIX_INSTANCE_URL=${{ inputs.hydrolix_target }}"
+            echo "HYDROLIX_USERNAME=${{ inputs.hydrolix_username }}"
+            echo "HYDROLIX_PASSWORD=${{ inputs.hydrolix_password }}"
+            echo "HYDROLIX_PROJECT_NAME=${{ inputs.hydrolix_project }}"
+            echo "HYDROLIX_TABLE_NAME=${{ inputs.hydrolix_table }}"
+          } > .env
+
+      - name: Build TypeScript
+        shell: bash
+        run: |
+          set -e
+          if npm run -s | grep -qE '^  build'; then
+            npm run build
+          else
+            npx tsc -p .
+          fi
+
+      - name: Install HarperDB CLI
+        run: npm install harperdb --global
+        shell: bash
+
+      - name: Deploy to HarperDB target
+        shell: bash
+        env:
+          CLI_TARGET_USERNAME: ${{ inputs.hdb_username }}
+          CLI_TARGET_PASSWORD: ${{ inputs.hdb_password }}
+        run: |
+          harperdb deploy \
+            target=${{ inputs.hdb_target }} \
+            restart=${{ inputs.restart }} \
+            replicated=${{ inputs.replicated }}
