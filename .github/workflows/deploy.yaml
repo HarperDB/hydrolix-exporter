@@ -6,7 +6,7 @@ on:
       # HarperDB inputs
       hdb_target:
         type: string
-        description: HarperDB Deployment Instance Target URL
+        description: HarperDB Deployment Instance Target URL (with scheme and operations api port)
         required: true
       hdb_username:
         type: string
@@ -30,7 +30,7 @@ on:
       # Hydrolix inputs
       hydrolix_target:
         type: string
-        description: Hydrolix Instance Target URL
+        description: Hydrolix Instance Target URL (with scheme, no trailing slash)
         required: true
       hydrolix_username:
         type: string
