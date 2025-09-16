@@ -26,10 +26,6 @@ on:
         type: string
         description: Specific branch or commit SHA to deploy (defaults to latest commit on the 'main' branch)
         required: false
-      restart:
-        type: boolean
-        description: Restart After Deploy
-        default: true
 
       # Hydrolix inputs
       hydrolix_target:
@@ -109,5 +105,5 @@ jobs:
         run: |
           harperdb deploy \
             target=${{ inputs.hdb_target }} \
-            restart=${{ inputs.restart }} \
+            restart=true \
             replicated=${{ inputs.replicated }}
